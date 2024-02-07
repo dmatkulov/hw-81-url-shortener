@@ -5,5 +5,3 @@ export interface Url {
 }
 
 export type UrlWithoutId = Omit<Url, '_id'>;
-
-export type UrlInput = Omit<UrlWithoutId, 'shortUrl'>;

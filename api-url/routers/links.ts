@@ -4,14 +4,6 @@ import {generateShortUrl} from '../helpers/constants';
 import Link from '../models/Link';
 
 const linksRouter = Router();
-linksRouter.get('/links', async (req, res, next) => {
-  try {
-    const results = await Link.find();
-    res.send(results);
-  } catch (e) {
-    next(e);
-  }
-});
 linksRouter.get('/:shortUrl', async (req, res, next) => {
   try {
     const shortUrl = req.params.shortUrl;
@@ -45,9 +37,7 @@ linksRouter.post('/links', async (req, res, next) => {
     const url = new Link(urlData);
     await url.save();
     
-    res.send({
-      ...url
-    });
+    res.send(url);
   } catch (e) {
     return next(e);
   }
