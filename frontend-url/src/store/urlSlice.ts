@@ -4,13 +4,13 @@ import {shortenUrl} from './urlThunks';
 import {RootState} from '../app/store';
 
 interface UrlState {
-  shortUrl: Url,
+  shortUrl: Url | null,
   isCreating: boolean,
   isLoaded: boolean,
 }
 
 const initialState: UrlState = {
-  shortUrl: {_id: '', shortUrl: '', originalUrl: ''},
+  shortUrl: null,
   isCreating: false,
   isLoaded: false
 };

@@ -1,22 +1,24 @@
+import React, {useEffect, useState} from 'react';
 import {
   Box,
   Button,
   CircularProgress,
   Container,
-  Divider,
+  Divider, IconButton,
   InputAdornment,
   Stack,
-  TextField,
+  TextField, Tooltip,
   Typography
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import React, {useState} from 'react';
-import {UrlInput} from './types';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 import {useAppDispatch, useAppSelector} from './app/hooks';
 import {shortenUrl} from './store/urlThunks';
 import {selectIsCreating, selectIsLoaded, selectShorUrl} from './store/urlSlice';
 import {apiURL} from './constants';
+import {UrlInput} from './types';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -28,7 +30,15 @@ function App() {
     originalUrl: ''
   });
   
-  const fullUrl = `${apiURL}/${shortUrl.shortUrl}`;
+  const [fullUrl, setFullUrl] = useState<string>('');
+  
+  useEffect(() => {
+    if (shortUrl) {
+      setFullUrl(apiURL + '/' + shortUrl.shortUrl);
+    } else {
+      setFullUrl('');
+    }
+  }, [shortUrl]);
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -44,6 +54,12 @@ function App() {
     setUrlData({
       originalUrl: ''
     });
+  };
+  
+  const handleCopyToClipboard = () => {
+    if (shortUrl) {
+      void navigator.clipboard.writeText(fullUrl);
+    }
   };
   
   return (
@@ -85,35 +101,54 @@ function App() {
             value={urlData.originalUrl}
           />
           <Button
+            type="submit"
             variant="contained"
             startIcon={<ArrowForwardIcon/>}
             disableRipple
             disableElevation
-            sx={{maxWidth: '116px', mt: 4}}
-            type="submit"
             disabled={isCreating}
+            sx={{maxWidth: '116px', mt: 4}}
           >
             Shorten
           </Button>
         </Box>
         {isCreating && <CircularProgress/>}
-        {isLoaded && (
+        {isLoaded && shortUrl && (
           <Stack spacing={3} direction="column" py={3}>
             <Divider/>
             <Typography variant="h6"
             >
               Your link now looks like this:
             </Typography>
-            <Box p={1} borderRadius={2} bgcolor="white">
+            <Stack
+              px={2}
+              py={1}
+              borderRadius={2}
+              bgcolor="white"
+              spacing={2}
+              direction="row"
+              divider={<Divider orientation="vertical" flexItem/>}
+            >
               <Button
                 href={shortUrl.originalUrl}
-                target="_blank"
                 key={shortUrl._id}
+                target="_blank"
+                variant="text"
                 size="small"
+                fullWidth
+                sx={{textTransform: 'none'}}
               >
                 {fullUrl}
               </Button>
-            </Box>
+              
+              <Tooltip title="Copy" arrow>
+                <IconButton
+                  onClick={handleCopyToClipboard}
+                >
+                  <ContentCopyIcon/>
+                </IconButton>
+              </Tooltip>
+            </Stack>
           </Stack>
         )}
       </Container>
