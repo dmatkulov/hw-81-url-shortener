@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
 import React, {useState} from 'react';
 import {UrlInput} from './types';
 import {useAppDispatch, useAppSelector} from './app/hooks';
